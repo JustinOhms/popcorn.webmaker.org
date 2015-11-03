@@ -46,6 +46,14 @@ Running Popcorn Maker in development mode
 
 If you want to change the bind IP or port check the Configuration section below.
 
+Troubleshooting
+---------------
+* If you are having trouble with sqlite on OSX, try installing it from source (XCode required)
+
+    npm install sqlite3 --build-from-source
+
+* Make sure Charles Proxy is closed if you are using the default 8888 port.
+
 Server Configuration
 --------------------
 
