@@ -23,7 +23,6 @@ define( [ "localized", "util/uri", "util/xhr", "json!/api/butterconfig", "jquery
       ARCHIVE_EMBED_DISABLED = Localized.get( "Embedding of this Archive item is not available yet" ),
       EMBED_UNPLAYABLE = Localized.get( "This media source is unplayable" ),
       CLYP_EMBED_UNPLAYABLE = Localized.get( "This Clyp source is unplayable" ),
-      CLYP_EMBED_PRIVATE = Localized.get( "This Clyp source is private" ),
       SOUNDCLOUD_EMBED_UNPLAYABLE = Localized.get( "This SoundCloud source is unplayable" ),
       SOUNDCLOUD_EMBED_DISABLED = Localized.get( "Embedding of this SoundCloud audio source is disabled" );
 
@@ -111,9 +110,9 @@ define( [ "localized", "util/uri", "util/xhr", "json!/api/butterconfig", "jquery
           return;
         }
 
-        xhrURL = "https://gdata.youtube.com/feeds/api/videos/" + id + "?v=2&alt=jsonc&callback=?";
+        xhrURL = "https://www.googleapis.com/youtube/v3/videos?part=snippet,status&id=" + id + "&key=AIzaSyBAYnjTdheTdR38IPicYk2iGbbxP03ctkQ&alt=json&callback=?";
         Popcorn.getJSONP( xhrURL, function( resp ) {
-          var respData = resp.data,
+          var respData = resp.items[0].snippet,
               from = parsedUri.queryKey.t,
               popcorn,
               div = document.createElement( "div" ),
@@ -137,7 +136,7 @@ define( [ "localized", "util/uri", "util/xhr", "json!/api/butterconfig", "jquery
             return;
           }
 
-          if ( respData.accessControl.embed === "denied" ) {
+          if ( resp.items[0].status.embeddable !== true ) {
             errorCallback( YOUTUBE_EMBED_DISABLED );
             return;
           }
@@ -159,8 +158,8 @@ define( [ "localized", "util/uri", "util/xhr", "json!/api/butterconfig", "jquery
               source: source,
               title: respData.title,
               type: type,
-              thumbnail: respData.thumbnail.hqDefault,
-              author: respData.uploader,
+              thumbnail: respData.thumbnails.default.url,
+              author: respData.channelTitle,
               duration: popcorn.duration(),
               from: from
             });
@@ -290,9 +289,6 @@ define( [ "localized", "util/uri", "util/xhr", "json!/api/butterconfig", "jquery
         $.getJSON( clypEndpoint + id, function( respData ) {
           if ( !respData ) {
             return errorCallback( CLYP_EMBED_UNPLAYABLE );
-          }
-          if ( respData.Status !== "Public" ) {
-            return errorCallback( CLYP_EMBED_PRIVATE );
           }
           successCallback({
             source: respData.SecureOggUrl,

@@ -46,6 +46,14 @@ Running Popcorn Maker in development mode
 
 If you want to change the bind IP or port check the Configuration section below.
 
+Troubleshooting
+---------------
+* If you are having trouble with sqlite on OSX, try installing it from source (XCode required)
+
+    npm install sqlite3 --build-from-source
+
+* Make sure Charles Proxy is closed if you are using the default 8888 port.
+
 Server Configuration
 --------------------
 
@@ -146,6 +154,18 @@ Configuration is done entirely with environment variables. See the [https://gith
 To enable New Relic monitoring with Popcorn Maker, the following environment variable *must* be set:
 
 * NEW\_RELIC\_HOME
+
+#### Localization
+
+To add a new language simply add a directory with a locale code under the `locale` directory with a JSON file(s) for your strings for example: 
+locale/**id_ID**/strings.json
+
+You also need to make sure you enable the language in your config by changing the value of `SUPPORTED_LANGS`
+``` json
+  "SUPPORTED_LANGS": [
+    "en-US", "id-ID"
+  ]
+```
 
 Getting Involved
 ----------------
